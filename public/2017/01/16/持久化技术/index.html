@@ -1,0 +1,1009 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Sharedpreferences,Sqlite,LitePal," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="数据持久化简介数据持久化就是指将那些内存中瞬时数据保存到设备储存中，保证即使在手机或者电脑关机的情况下，这些数据仍然不会丢失的技术。保存在内存中的数据是处于瞬时状态的，而保存在存储设备中的数据是处于持久状态的，持久化技术提供了一种机制可以是让数据在瞬时状态和持久状态之间转换。
+Android系统主要提供了三种方式用来实现数据持久化技术，即是文件储存、SharedPreferences以及数据库存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持久化技术">
+<meta property="og:url" content="http://yoursite.com/2017/01/16/持久化技术/index.html">
+<meta property="og:site_name" content="Li Ming Yang's Blog">
+<meta property="og:description" content="数据持久化简介数据持久化就是指将那些内存中瞬时数据保存到设备储存中，保证即使在手机或者电脑关机的情况下，这些数据仍然不会丢失的技术。保存在内存中的数据是处于瞬时状态的，而保存在存储设备中的数据是处于持久状态的，持久化技术提供了一种机制可以是让数据在瞬时状态和持久状态之间转换。
+Android系统主要提供了三种方式用来实现数据持久化技术，即是文件储存、SharedPreferences以及数据库存储">
+<meta property="og:updated_time" content="2017-02-04T13:55:48.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="持久化技术">
+<meta name="twitter:description" content="数据持久化简介数据持久化就是指将那些内存中瞬时数据保存到设备储存中，保证即使在手机或者电脑关机的情况下，这些数据仍然不会丢失的技术。保存在内存中的数据是处于瞬时状态的，而保存在存储设备中的数据是处于持久状态的，持久化技术提供了一种机制可以是让数据在瞬时状态和持久状态之间转换。
+Android系统主要提供了三种方式用来实现数据持久化技术，即是文件储存、SharedPreferences以及数据库存储">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/16/持久化技术/"/>
+
+
+
+
+
+  <title> 持久化技术 | Li Ming Yang's Blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Li Ming Yang's Blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">Take your broken heart ,Make it into codes</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-message">
+          <a href="/message" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-external-link"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/16/持久化技术/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="木子明阳">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpeg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Li Ming Yang's Blog">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Li Ming Yang's Blog" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                持久化技术
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-16T18:23:37+08:00">
+                2017-01-16
+              </time>
+
+              <span>
+    |
+
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/01/16/持久化技术/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/16/持久化技术/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="数据持久化简介"><a href="#数据持久化简介" class="headerlink" title="数据持久化简介"></a>数据持久化简介</h1><p>数据持久化就是指将那些内存中瞬时数据保存到设备储存中，保证即使在手机或者电脑关机的情况下，这些数据仍然不会丢失的技术。保存在内存中的数据是处于瞬时状态的，而保存在存储设备中的数据是处于持久状态的，持久化技术提供了一种机制可以是让数据在瞬时状态和持久状态之间转换。</p>
+<p>Android系统主要提供了三种方式用来实现数据持久化技术，即是文件储存、SharedPreferences以及数据库存储。</p>
+<h1 id="文件存储"><a href="#文件存储" class="headerlink" title="文件存储"></a>文件存储</h1><p>文件存储是Android中最基本的一中数据存储技术，他不对存储的类容进行任何格式化的处理，所有的数据都是原封不动的保存到文件当中的。如果向使用文件存储一些较为复杂的文本数据，就需要定义一套自己的格式规范，这样可以方便之后数据的解析。</p>
+<p> 代码示例：</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(String content)</span> </span>&#123;</div><div class="line">       FileOutputStream fileOutputStream = <span class="keyword">null</span>;</div><div class="line">       BufferedWriter writer = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">       <span class="keyword">try</span> &#123;</div><div class="line">           fileOutputStream = openFileOutput(<span class="string">"data"</span>, Context.MODE_PRIVATE);</div><div class="line">           writer = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(fileOutputStream));</div><div class="line">           writer.write(content);</div><div class="line">       &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">           e.printStackTrace();</div><div class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">           e.printStackTrace();</div><div class="line">       &#125; <span class="keyword">finally</span> &#123;</div><div class="line">           <span class="keyword">if</span> (writer!=<span class="keyword">null</span>)</div><div class="line">               <span class="keyword">try</span> &#123;</div><div class="line">                   writer.close();</div><div class="line">               &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                   e.printStackTrace();</div><div class="line">               &#125;</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">private</span> String <span class="title">getdata</span><span class="params">()</span></span></div><div class="line">   &#123;</div><div class="line">       FileInputStream inputStream=<span class="keyword">null</span>;</div><div class="line">       BufferedReader reader=<span class="keyword">null</span>;</div><div class="line">       StringBuilder builder=<span class="keyword">new</span> StringBuilder();</div><div class="line">       <span class="keyword">try</span> &#123;</div><div class="line">           inputStream=openFileInput(<span class="string">"data"</span>);</div><div class="line">           reader=<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream));</div><div class="line">           String line=<span class="string">""</span>;</div><div class="line">           <span class="keyword">while</span> ((line=reader.readLine())!=<span class="keyword">null</span>)</div><div class="line">           &#123;</div><div class="line">               builder.append(line);</div><div class="line">           &#125;</div><div class="line">       &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</div><div class="line">           e.printStackTrace();</div><div class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">           e.printStackTrace();</div><div class="line">       &#125;<span class="keyword">finally</span> &#123;</div><div class="line">           <span class="keyword">if</span>(reader!=<span class="keyword">null</span>)</div><div class="line">           &#123;</div><div class="line">               <span class="keyword">try</span> &#123;</div><div class="line">                   reader.close();</div><div class="line">               &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">                   e.printStackTrace();</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line"></div><div class="line">       <span class="keyword">return</span> builder.toString();</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h1 id="Sharedpreferences"><a href="#Sharedpreferences" class="headerlink" title="Sharedpreferences"></a>Sharedpreferences</h1><p>不同于文件的存储方式，sharedpreferences是使用键值对的方式来存储数据的。也就是说，当保存一条数据的时候，需要给这条数据提供一个对应的键，这样在读取数据的时候就可以通过这个键把相应的值取出来。而且Sharedpreferences还支持多种不同的数据类型存储，如果存储的数据是一个字符串，那么读取出来的就是一个字符串；如果存储的是一个整形，那么读出来的就是一个整形。</p>
+<h2 id="Sharedpreferences存储数据"><a href="#Sharedpreferences存储数据" class="headerlink" title="Sharedpreferences存储数据"></a>Sharedpreferences存储数据</h2><h3 id="获取Sharedpreferences对象"><a href="#获取Sharedpreferences对象" class="headerlink" title="获取Sharedpreferences对象"></a>获取Sharedpreferences对象</h3><h4 id="Context类中的getSharedPreferences-方法"><a href="#Context类中的getSharedPreferences-方法" class="headerlink" title="Context类中的getSharedPreferences()方法"></a>Context类中的getSharedPreferences()方法</h4><p>此方法接收两个参数，第一个参数用于指定Sharedpreferences文件的名称，如果指定的文件不存在则会创建一个。第二个参数用于指定操作模式，目前只有MODE_PRIVATE这一种模式可选，其他集中模式已经被逐渐废除。</p>
+<h4 id="Activity类中getPreferences"><a href="#Activity类中getPreferences" class="headerlink" title="Activity类中getPreferences()"></a>Activity类中getPreferences()</h4><p>这个方法和Context中的getSharedPreferences()方法很相似，不过他只接收一个操作模式参数，因为使用这个方法时会自动将当前活动的类名作为sharedpreferences的文件名。</p>
+<h4 id="PreferenceManger类中的getDefaultSharedPreferences-方法"><a href="#PreferenceManger类中的getDefaultSharedPreferences-方法" class="headerlink" title="PreferenceManger类中的getDefaultSharedPreferences()方法"></a>PreferenceManger类中的getDefaultSharedPreferences()方法</h4><p>这是一个静态方法，他接受一个Context参数，并使用当前应用程序的包名作为前缀来命名    SharedPreferences文件。</p>
+<h3 id="向SharedPreferences存储数据的步骤"><a href="#向SharedPreferences存储数据的步骤" class="headerlink" title="向SharedPreferences存储数据的步骤"></a>向SharedPreferences存储数据的步骤</h3><ul>
+<li><p>1.调用Sharedpreferences对象的edit()方法来获取Sharedpreferences.Editor()对象。</p>
+</li>
+<li><p>2.向Sharedpreferences.Editor()对象中添加数据，比如添加布尔型数据就使用putBoolean()方法。</p>
+</li>
+<li><p>3.调用apply()方法提交数据。完成操作</p>
+</li>
+</ul>
+<h2 id="Sharedpreferences读取数据"><a href="#Sharedpreferences读取数据" class="headerlink" title="Sharedpreferences读取数据"></a>Sharedpreferences读取数据</h2><p>获取Sharedpreferences对象后使用该对象的get方法获取相应数据。</p>
+<h1 id="SQLite数据库存储"><a href="#SQLite数据库存储" class="headerlink" title="SQLite数据库存储"></a>SQLite数据库存储</h1><p>Sqlite是一款轻量级关系型数据库，他的运算速度非常快，占用资源很少。Sqlite不仅支持标准的sql语法，还遵循数据库的ACID事物。</p>
+<h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><p>Android为我们提供了一个SqliteOpenHelper帮组类，这是一个抽象类，需要创建一个类去继承他并重写onCreate()和onUpgrade()这个两个方法。</p>
+<h2 id="DbHelper代码示例"><a href="#DbHelper代码示例" class="headerlink" title="DbHelper代码示例"></a>DbHelper代码示例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DbHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DATABASE_NAME = <span class="string">"data.db"</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DATABASE_VERSION = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DbHelper</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="comment">//CursorFactory设置为null,使用默认值</span></div><div class="line">        <span class="keyword">super</span>(context, DATABASE_NAME, <span class="keyword">null</span>, DATABASE_VERSION);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</div><div class="line">     db.execSQL(<span class="string">"CREATE TABLE IF NOT EXISTS person(_id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR, age INTEGER)"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="DBManger代码示例"><a href="#DBManger代码示例" class="headerlink" title="DBManger代码示例"></a>DBManger代码示例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBManger</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> DbHelper dbHelper;</div><div class="line">    <span class="keyword">private</span> SQLiteDatabase sqLiteDatabase;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DBManger</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        dbHelper=<span class="keyword">new</span> DbHelper(context);</div><div class="line">        <span class="keyword">this</span>.sqLiteDatabase = dbHelper.getWritableDatabase();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addPerson</span><span class="params">(List&lt;person&gt; personList)</span></span></div><div class="line">    &#123;</div><div class="line">        sqLiteDatabase.beginTransaction();</div><div class="line">        <span class="keyword">for</span> (person person : personList) &#123;</div><div class="line"><span class="comment">//            sqLiteDatabase.execSQL("INSERT INTO person VALUES(null, ?, ?)",new Object[]&#123;person.name,person.age&#125;);</span></div><div class="line">            ContentValues values = <span class="keyword">new</span> ContentValues();</div><div class="line">            values.put(<span class="string">"name"</span>, person.name);</div><div class="line">            values.put(<span class="string">"age"</span>, person.age);</div><div class="line">            sqLiteDatabase.insert(<span class="string">"person"</span>,<span class="keyword">null</span>,values);</div><div class="line">        &#125;</div><div class="line">        sqLiteDatabase.setTransactionSuccessful();</div><div class="line">        sqLiteDatabase.endTransaction();</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delPerson</span><span class="params">(person person)</span></span></div><div class="line">    &#123;</div><div class="line">        sqLiteDatabase.delete(<span class="string">"person"</span>,<span class="string">"age=?"</span>,<span class="keyword">new</span> String[]&#123;String.valueOf(person.age)&#125;);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="LitePal"><a href="#LitePal" class="headerlink" title="LitePal"></a>LitePal</h1><p>LitePal是一款开源的Android数据库框架，它采用了对象关系映射(ORM)的模式，并将我们平时开发时最常用到的一些数据库功能进行了封装，使得不用编写一行SQL语句就可以完成各种建表、増删改查的操作。</p>
+<h2 id="数据库的创建"><a href="#数据库的创建" class="headerlink" title="数据库的创建"></a>数据库的创建</h2><p>定义一个JavaBean类，该类每个字段都对应数据库表中的一个列。<br>如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Album</span> <span class="keyword">extends</span> <span class="title">DataSupport</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Column</span>(unique = <span class="keyword">true</span>, defaultValue = <span class="string">"unknown"</span>)</div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> price;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] cover;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;Song&gt; songs = <span class="keyword">new</span> ArrayList&lt;Song&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Album <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getPrice</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> price;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Album <span class="title">setPrice</span><span class="params">(<span class="keyword">float</span> price)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.price = price;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] getCover() &#123;</div><div class="line">        <span class="keyword">return</span> cover;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Album <span class="title">setCover</span><span class="params">(<span class="keyword">byte</span>[] cover)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.cover = cover;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Song&gt; <span class="title">getSongs</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> songs;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Album <span class="title">setSongs</span><span class="params">(List&lt;Song&gt; songs)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.songs = songs;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接下来我们还需要将该类添加到映射列表中(此处需要填写完整的路径以及名称)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">litepal</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">dbname</span> <span class="attr">value</span>=<span class="string">"BookStore"</span>&gt;</span><span class="tag">&lt;/<span class="name">dbname</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">version</span> <span class="attr">value</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">list</span>&gt;</span></div><div class="line">     <span class="tag">&lt;<span class="name">mapping</span> <span class="attr">class</span>=<span class="string">"cn.shay.mydemo.litepal.Album"</span>&gt;</span><span class="tag">&lt;/<span class="name">mapping</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">mapping</span> <span class="attr">class</span>=<span class="string">"cn.shay.mydemo.litepal.Song"</span>&gt;</span><span class="tag">&lt;/<span class="name">mapping</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">list</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">litepal</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>值得注意的是还需要在Application中初始化<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyOwnApplication</span> <span class="keyword">extends</span> <span class="title">AnotherApplication</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line">        LitePal.initialize(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>到目前为止，我们就把所有工作都做完了。现在进行一次任意的数据库操作数据库就可以被创建出来了。但是问题来了，怎么看数据库有没有被创建好呢？这里介绍一个比较好用的工具<a href="https://github.com/amitshekhariitbhu/Android-Debug-Database" target="_blank" rel="external">Android-Debug-Database</a>，这个工具可以方便的在电脑上使用浏览器产看手机上的数据库以及sharedperfences。</p>
+<p>要使用这个项目，只需要添加以下依赖：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">debugCompile &apos;com.amitshekhar.android:debug-db:+&apos;</div></pre></td></tr></table></figure></p>
+<p>然后开始运行软就可以开到类如下日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D/DebugDB: Open http://XXX.XXX.X.XXX:8080 in your browser</div></pre></td></tr></table></figure></p>
+<p>打这个地址就可以看到数据库以及sharedperfences相关数据了。</p>
+<h2 id="数据库的升级"><a href="#数据库的升级" class="headerlink" title="数据库的升级"></a>数据库的升级</h2><p>使用SqliteOpenHelper的方式来升级数据库会把之前的表drop掉并新建一个表，这样会造成数据损失。虽然可以通过一系列操作避免数据的损失，但是这样的操作无疑是很繁琐的。通过使用litepal就可以很轻松的解决掉这个问题，使用litepal来生数据库非常简单，甚至完全不需要考虑任何逻辑。唯一需要做的就是想好你要怎么改，然后将数据库版本加1就可以了。数据完全不会丢失。</p>
+<h2 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h2><p>先回忆一下之前添加数据方法，我们需要将数据添加到ContentValues对象中，再通过调用SqliteDatabase的insert()方法实现。</p>
+<p>那么使用LitePal呢？我们只需传教出模型类的实例并将要存储的数据设置好，最后调用一下save()就可以了。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Album albumToUpdate = DataSupport.find(Album.class, <span class="number">1</span>);</div><div class="line">                Song song1 = <span class="keyword">new</span> Song();</div><div class="line">                song1.setName(String.valueOf(UUID.randomUUID()));</div><div class="line">                song1.setDuration(<span class="number">320</span>);</div><div class="line">                song1.setAlbum(albumToUpdate);</div><div class="line">                song1.save();</div><div class="line">                Song song2 = <span class="keyword">new</span> Song();</div><div class="line">                song2.setName(String.valueOf(UUID.randomUUID()));</div><div class="line">                song2.setDuration(<span class="number">356</span>);</div><div class="line">                song2.setAlbum(albumToUpdate);</div><div class="line">                song2.save();</div></pre></td></tr></table></figure></p>
+<h2 id="更新数据"><a href="#更新数据" class="headerlink" title="更新数据"></a>更新数据</h2><ul>
+<li><p>通过save()方法更新数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Album albumToUpdate = DataSupport.find(Album.class, <span class="number">1</span>);</div><div class="line">              albumToUpdate.setPrice(<span class="number">201.99f</span>);</div><div class="line">              albumToUpdate.save();</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过update()方法更新：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Album albumToUpdate = <span class="keyword">new</span> Album();</div><div class="line">          albumToUpdate.setPrice(<span class="number">20.99f</span>);</div><div class="line">          albumToUpdate.update(id);</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过updataAll()方法更新：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Album albumToUpdate = <span class="keyword">new</span> Album();</div><div class="line">      albumToUpdate.setPrice(<span class="number">20.99f</span>);</div><div class="line">      albumToUpdate.updateAll(<span class="string">"name = ?"</span>, <span class="string">"album"</span>);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="删除数据"><a href="#删除数据" class="headerlink" title="删除数据"></a>删除数据</h2><ul>
+<li><p>通过delete()方法删除</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DataSupport.delete(Song.class, <span class="number">3</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过deleteAll()方法删除</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">DataSupport.deleteAll(Song.class, <span class="string">"duration &gt; ?"</span> , <span class="string">"350"</span>);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h2><p>使用Litepal查询数据非常简单，只需要这样写：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.findAll(Song.class);</div></pre></td></tr></table></figure></p>
+<p>这样就把Song表的所有数据查出来了，而且结果已经放到了一个集合里面，不再需要使用Cursor一一取值了。<br>除了findall()之外，litePal还提供了跟多其他方法来满足我们的需求，如：</p>
+<ul>
+<li><p>查询第一条数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Song fristsong=DataSupport.findFirst(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>查询最后一条数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Song fristsong=DataSupport.findLast(Song.class);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>我们还可以通过连缀查询来定制更多的功能来实现自己的需求</p>
+<ul>
+<li><p>select()查寻特定关键字的值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.select(<span class="string">"name"</span>,<span class="string">"price"</span>).find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>where()条件查询</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.where(<span class="string">"prcie&gt;?"</span>,<span class="string">"15"</span>).find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>order()用于指定结果的排序方式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.order(<span class="string">"price desc"</span>).find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>limit()用于指定查询结果的数量，如查寻3条数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.limit(<span class="number">3</span>).find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>offset()用于指定查询结果的偏移量，如查询第二三四条数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.limit(<span class="number">3</span>).offset(<span class="number">1</span>).find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>连缀组合示例,查询第十一至二十条数据中价格大于10的name和price这两列数据，并将查选结果按照价格排序</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">List&lt;Song&gt; allSongs = DataSupport.select(<span class="string">"name"</span>,<span class="string">"price"</span>)</div><div class="line">                       .where(<span class="string">"price &gt; ?"</span>,<span class="string">"10"</span>)</div><div class="line">                       .order(<span class="string">"price"</span>)</div><div class="line">                       .limit(<span class="number">10</span>)</div><div class="line">                       .offset(<span class="number">10</span>)</div><div class="line">                       .find(Song.class);</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果这些都不能满足你，你还可以用DataSupport.findBySQL()方法来做。参数是sql语句，注意该方法返回的是一个Cursor对象</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Sharedpreferences/" rel="tag"># Sharedpreferences</a>
+          
+            <a href="/tags/Sqlite/" rel="tag"># Sqlite</a>
+          
+            <a href="/tags/LitePal/" rel="tag"># LitePal</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/16/Android广播机制/" rel="next" title="Android广播机制">
+                <i class="fa fa-chevron-left"></i> Android广播机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/03/RxJava与Retrofit结合的实践/" rel="prev" title="RxJava与Retrofit结合的实践">
+                RxJava与Retrofit结合的实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/01/16/持久化技术/"
+     data-title="持久化技术"
+     data-content=""
+     data-url="http://yoursite.com/2017/01/16/持久化技术/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/16/持久化技术/"
+           data-title="持久化技术" data-url="http://yoursite.com/2017/01/16/持久化技术/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpeg"
+               alt="木子明阳" />
+          <p class="site-author-name" itemprop="name">木子明阳</p>
+          <p class="site-description motion-element" itemprop="description">Do one thing at a time, and do well.</p>
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/u/3811342505?refer_flag=1001030101" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=41665696&auto=1&height=66"></iframe>
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据持久化简介"><span class="nav-number">1.</span> <span class="nav-text">数据持久化简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件存储"><span class="nav-number">2.</span> <span class="nav-text">文件存储</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Sharedpreferences"><span class="nav-number">3.</span> <span class="nav-text">Sharedpreferences</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sharedpreferences存储数据"><span class="nav-number">3.1.</span> <span class="nav-text">Sharedpreferences存储数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取Sharedpreferences对象"><span class="nav-number">3.1.1.</span> <span class="nav-text">获取Sharedpreferences对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Context类中的getSharedPreferences-方法"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">Context类中的getSharedPreferences()方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity类中getPreferences"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">Activity类中getPreferences()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PreferenceManger类中的getDefaultSharedPreferences-方法"><span class="nav-number">3.1.1.3.</span> <span class="nav-text">PreferenceManger类中的getDefaultSharedPreferences()方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向SharedPreferences存储数据的步骤"><span class="nav-number">3.1.2.</span> <span class="nav-text">向SharedPreferences存储数据的步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sharedpreferences读取数据"><span class="nav-number">3.2.</span> <span class="nav-text">Sharedpreferences读取数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQLite数据库存储"><span class="nav-number">4.</span> <span class="nav-text">SQLite数据库存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库"><span class="nav-number">4.1.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DbHelper代码示例"><span class="nav-number">4.2.</span> <span class="nav-text">DbHelper代码示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DBManger代码示例"><span class="nav-number">4.3.</span> <span class="nav-text">DBManger代码示例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LitePal"><span class="nav-number">5.</span> <span class="nav-text">LitePal</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库的创建"><span class="nav-number">5.1.</span> <span class="nav-text">数据库的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库的升级"><span class="nav-number">5.2.</span> <span class="nav-text">数据库的升级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加数据"><span class="nav-number">5.3.</span> <span class="nav-text">添加数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新数据"><span class="nav-number">5.4.</span> <span class="nav-text">更新数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除数据"><span class="nav-number">5.5.</span> <span class="nav-text">删除数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询数据"><span class="nav-number">5.6.</span> <span class="nav-text">查询数据</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">木子明阳</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"xiongyu"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
